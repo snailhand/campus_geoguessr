@@ -171,7 +171,7 @@ export default function App() {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Campus GeoGussr - Participant View</title>
+          <title>Campus GeoGuessr - Participant View</title>
           <script src="https://cdn.tailwindcss.com"></script>
           <style>
             body { margin: 0; padding: 0; overflow: hidden; }
@@ -415,7 +415,7 @@ export default function App() {
       <div className="mx-auto max-w-7xl p-4 md:p-6 lg:p-8">
         <header className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Campus GeoGussr</h1>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Campus GeoGuessr</h1>
             <p className="text-sm text-slate-400">Upload photos, set answers & hints, run a timer that auto‑unblurs the image, and score teams.</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
