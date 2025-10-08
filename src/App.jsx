@@ -171,7 +171,7 @@ export default function App() {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Campus GeoGuessr - Participant View</title>
+          <title>Campus GeoGussr - Participant View</title>
           <script src="https://cdn.tailwindcss.com"></script>
           <style>
             body { margin: 0; padding: 0; overflow: hidden; }
