@@ -416,8 +416,6 @@ export default function App() {
         <header className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Campus GeoGuessr</h1>
-          </div>
-          <div>
             <p className="text-sm text-slate-400">
               Click on 'Add Rounds' to upload photos, 
               'Start' to run a timer that auto‑unblurs the image,
@@ -603,8 +601,15 @@ export default function App() {
                 <button onClick={resetScores} className="rounded-lg bg-slate-800 px-3 py-1 text-xs hover:bg-slate-700">Reset</button>
               </div>
               <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-                {teams.map((t, i) => (
-                  <div key={t.id} className="rounded-xl bg-slate-800/60 p-3">
+                {teams.map((t, i) => {
+                  const teamColors = [
+                    'bg-blue-800/60 border-blue-500/30', // Team A - Blue
+                    'bg-red-800/60 border-red-500/30',   // Team B - Red  
+                    'bg-green-800/60 border-green-500/30', // Team C - Green
+                    'bg-purple-800/60 border-purple-500/30' // Team D - Purple
+                  ];
+                  return (
+                  <div key={t.id} className={`rounded-xl ${teamColors[i]} p-3 border-2`}>
                     <input
                       value={t.name}
                       onChange={(e) => renameTeam(i, e.target.value)}
@@ -624,7 +629,8 @@ export default function App() {
                       <CustomDelta onApply={(n) => setTeamScore(i, n)} />
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
