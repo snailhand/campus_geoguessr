@@ -473,6 +473,23 @@ export default function App() {
                     {isRunning ? 'Running' : 'Paused'}
                   </div>
                 </div>
+                <div className="text-center">
+                  <div className="text-xs text-slate-400 mb-1">Leading Team</div>
+                  <div className={`text-lg font-semibold ${
+                    teams.length > 0 && teams.every(t => t.score === 0) 
+                      ? 'text-slate-400' 
+                      : (() => {
+                          const leadingTeam = teams.reduce((max, team) => team.score > max.score ? team : max, teams[0]);
+                          const teamColors = ['text-blue-400', 'text-red-400', 'text-green-400', 'text-purple-400'];
+                          return teamColors[teams.indexOf(leadingTeam)] || 'text-slate-400';
+                        })()
+                  }`}>
+                    {teams.length > 0 && teams.every(t => t.score === 0) 
+                      ? 'Tied' 
+                      : teams.reduce((max, team) => team.score > max.score ? team : max, teams[0]).name
+                    }
+                  </div>
+                </div>
               </div>
             </div>
           </div>
