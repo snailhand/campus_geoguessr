@@ -415,8 +415,13 @@ export default function App() {
       <div className="mx-auto max-w-7xl p-4 md:p-6 lg:p-8">
         <header className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Campus GeoGuessr</h1>
-            <p className="text-sm text-slate-400">Upload photos, set answers & hints, run a timer that auto‑unblurs the image, and score teams.</p>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Campus GeoGuessr</h1>
+          </div>
+          <div>
+            <p className="text-sm text-slate-400">
+              Click on 'Add Rounds' to upload photos, 
+              'Start' to run a timer that auto‑unblurs the image,
+              'Participant view' to open a new window with the current round image</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button onClick={openFiles} className="rounded-xl bg-slate-800/60 px-3 py-2 text-sm hover:bg-slate-700/60">
@@ -594,7 +599,7 @@ export default function App() {
             {/* Scoreboard */}
             <div className="mt-4 rounded-2xl border border-white/10 bg-slate-900/60 p-4 shadow">
               <div className="mb-3 flex items-center justify-between">
-                <h2 className="text-lg font-semibold">Scoreboard</h2>
+                <h2 className="text-2xl font-semibold">Scoreboard</h2>
                 <button onClick={resetScores} className="rounded-lg bg-slate-800 px-3 py-1 text-xs hover:bg-slate-700">Reset</button>
               </div>
               <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
@@ -679,7 +684,7 @@ export default function App() {
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-4 shadow">
-              <h2 className="mb-3 text-lg font-semibold">Timer & Blur</h2>
+              <h2 className="mb-3 text-lg font-semibold">Timer, Blur & Zoom</h2>
               <div className="space-y-3">
                 <div className="flex items-center justify-between gap-3">
                   <label className="text-sm text-slate-300">Round duration (sec)</label>
