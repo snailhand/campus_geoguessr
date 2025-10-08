@@ -450,7 +450,34 @@ export default function App() {
         </header>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
-          {/* Left: Stage */}
+          {/* Left: Game Stats */}
+          <div className="lg:col-span-1">
+            <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-4 shadow">
+              <h2 className="mb-3 text-lg font-semibold">Game Stats</h2>
+              <div className="space-y-4">
+                <div className="text-center">
+                  <div className="text-xs text-slate-400 mb-1">Total Rounds</div>
+                  <div className="text-2xl font-bold">{rounds.length}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xs text-slate-400 mb-1">Current Round</div>
+                  <div className="text-2xl font-bold">{current + 1}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xs text-slate-400 mb-1">Total Score</div>
+                  <div className="text-2xl font-bold">{teams.reduce((sum, team) => sum + team.score, 0)}</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xs text-slate-400 mb-1">Timer Status</div>
+                  <div className={`text-lg font-semibold ${isRunning ? 'text-green-400' : 'text-slate-400'}`}>
+                    {isRunning ? 'Running' : 'Paused'}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Middle: Stage */}
           <div className="lg:col-span-2">
             <div
               className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-slate-900 shadow-xl ring-1 ring-white/10"
@@ -632,33 +659,6 @@ export default function App() {
                   </div>
                   );
                 })}
-              </div>
-            </div>
-          </div>
-
-          {/* Middle: Game Stats */}
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-4 shadow">
-              <h2 className="mb-3 text-lg font-semibold">Game Stats</h2>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-300">Total Rounds:</span>
-                  <span className="text-sm font-semibold">{rounds.length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-300">Current Round:</span>
-                  <span className="text-sm font-semibold">{current + 1}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-300">Total Score:</span>
-                  <span className="text-sm font-semibold">{teams.reduce((sum, team) => sum + team.score, 0)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-sm text-slate-300">Timer Status:</span>
-                  <span className={`text-sm font-semibold ${isRunning ? 'text-green-400' : 'text-slate-400'}`}>
-                    {isRunning ? 'Running' : 'Paused'}
-                  </span>
-                </div>
               </div>
             </div>
           </div>
