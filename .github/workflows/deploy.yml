@@ -33,7 +33,7 @@ jobs:
           npm install --legacy-peer-deps
 
       - name: Build
-        run: npm run build
+        run: npx --yes vite build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
