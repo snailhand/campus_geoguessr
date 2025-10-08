@@ -417,9 +417,10 @@ export default function App() {
           <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Campus GeoGuessr</h1>
             <p className="text-sm text-slate-400">
-              <br />Click on 'Add Rounds' to upload photos, <br />
-              'Start' to run a timer that auto‑unblurs the image, <br />
-              'Participant view' to open a new window with the current round image</p>
+              Click on 'Add Rounds' to upload photos,<br />
+              'Start' to run a timer that auto‑unblurs the image,<br />
+              'Participant view' to open a new window with the current round image
+            </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <button onClick={openFiles} className="rounded-xl bg-slate-800/60 px-3 py-2 text-sm hover:bg-slate-700/60">
@@ -452,7 +453,7 @@ export default function App() {
           {/* Left: Stage */}
           <div className="lg:col-span-2">
             <div
-              className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-slate-900 shadow-xl ring-1 ring-white/10"
+              className="relative aspect-video w-full overflow-hidden rounded-2xl bg-slate-900 shadow-xl ring-1 ring-white/10"
               onDragOver={(e) => e.preventDefault()}
               onDrop={onDropStage}
               title="Tip: drag & drop images here"
