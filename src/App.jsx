@@ -442,19 +442,6 @@ export default function App() {
             >
               👥
             </button>
-            <label className="inline-flex items-center gap-2 rounded-xl bg-slate-800/60 px-3 py-2">
-              <span className="text-sm text-slate-300">Import Pack</span>
-              <input
-                type="file"
-                accept="application/json"
-                className="hidden"
-                onChange={(e) => e.target.files && importPack(e.target.files[0])}
-              />
-              <span className="rounded-lg bg-slate-700/60 px-2 py-1 text-xs">JSON</span>
-            </label>
-            <button onClick={exportPack} className="rounded-xl bg-slate-800/60 px-3 py-2 text-sm hover:bg-slate-700/60">
-              Export Pack
-            </button>
           </div>
         </header>
 
