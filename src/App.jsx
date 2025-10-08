@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
 /**
- * Vibe & Connect GeoGussr
+ * Vibe & Connect's Campus GeoGuessr
  * Single-file React host app for running a photo-based "GeoGuessr-style" game.
  *
  * Quick fix notes (why images might not show):
@@ -171,7 +171,7 @@ export default function App() {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>Vibe & Connect GeoGussr - Participant View</title>
+          <title>Campus GeoGuessr - Participant View</title>
           <script src="https://cdn.tailwindcss.com"></script>
           <style>
             body { margin: 0; padding: 0; overflow: hidden; }
@@ -415,7 +415,7 @@ export default function App() {
       <div className="mx-auto max-w-7xl p-4 md:p-6 lg:p-8">
         <header className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Vibe & Connect GeoGussr</h1>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight">Campus GeoGuessr</h1>
             <p className="text-sm text-slate-400">Upload photos, set answers & hints, run a timer that auto‑unblurs the image, and score teams.</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -432,7 +432,7 @@ export default function App() {
               className="rounded-xl bg-red-800/60 px-3 py-2 text-sm hover:bg-red-700/60"
               disabled={rounds.length === 0}
             >
-              Clear All
+              Clear all rounds
             </button>
             <button 
               onClick={openParticipantView}
@@ -440,7 +440,7 @@ export default function App() {
               disabled={!activeRound}
               title="Open participant view in new window"
             >
-              👥
+              Participant View
             </button>
           </div>
         </header>
@@ -727,7 +727,8 @@ export default function App() {
         </div>
 
         <footer className="mt-6 text-center text-xs text-slate-500">
-          Pro-tip: drag & drop works on the stage. If you reload, re-add images (object URLs are session-based).
+          Try not to reload the page as it will reset the image URLs 
+          (object URLs are session-based).
         </footer>
       </div>
     </div>
