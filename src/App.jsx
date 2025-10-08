@@ -432,7 +432,7 @@ export default function App() {
               className="rounded-xl bg-red-800/60 px-3 py-2 text-sm hover:bg-red-700/60"
               disabled={rounds.length === 0}
             >
-              Clear All
+              Clear all rounds
             </button>
             <button 
               onClick={openParticipantView}
@@ -440,7 +440,7 @@ export default function App() {
               disabled={!activeRound}
               title="Open participant view in new window"
             >
-              👥
+              Participant view
             </button>
           </div>
         </header>
@@ -727,7 +727,7 @@ export default function App() {
         </div>
 
         <footer className="mt-6 text-center text-xs text-slate-500">
-          Pro-tip: drag & drop works on the stage. If you reload, re-add images (object URLs are session-based).
+          Try not to reload the page as it will reset the image URLs (object URLs are session-based).
         </footer>
       </div>
     </div>
