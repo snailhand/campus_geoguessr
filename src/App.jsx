@@ -453,7 +453,7 @@ export default function App() {
           {/* Left: Stage */}
           <div className="lg:col-span-2">
             <div
-              className="relative aspect-video w-full overflow-hidden rounded-2xl bg-slate-900 shadow-xl ring-1 ring-white/10"
+              className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-slate-900 shadow-xl ring-1 ring-white/10"
               onDragOver={(e) => e.preventDefault()}
               onDrop={onDropStage}
               title="Tip: drag & drop images here"
