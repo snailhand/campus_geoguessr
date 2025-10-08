@@ -412,7 +412,7 @@ export default function App() {
         onChange={(e) => e.target.files && handleAddRounds(e.target.files)}
       />
 
-      <div className="mx-auto max-w-7xl p-4 md:p-6 lg:p-8">
+      <div className="mx-auto max-w-[95vw] p-4 md:p-6 lg:p-8">
         <header className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <div>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Campus GeoGuessr</h1>
@@ -449,7 +449,7 @@ export default function App() {
           </div>
         </header>
 
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
           {/* Left: Stage */}
           <div className="lg:col-span-2">
             <div
@@ -632,6 +632,33 @@ export default function App() {
                   </div>
                   );
                 })}
+              </div>
+            </div>
+          </div>
+
+          {/* Middle: Game Stats */}
+          <div className="space-y-4">
+            <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-4 shadow">
+              <h2 className="mb-3 text-lg font-semibold">Game Stats</h2>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-300">Total Rounds:</span>
+                  <span className="text-sm font-semibold">{rounds.length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-300">Current Round:</span>
+                  <span className="text-sm font-semibold">{current + 1}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-300">Total Score:</span>
+                  <span className="text-sm font-semibold">{teams.reduce((sum, team) => sum + team.score, 0)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-slate-300">Timer Status:</span>
+                  <span className={`text-sm font-semibold ${isRunning ? 'text-green-400' : 'text-slate-400'}`}>
+                    {isRunning ? 'Running' : 'Paused'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
