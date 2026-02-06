@@ -82,6 +82,15 @@ export default function App() {
     return () => cancelAnimationFrame(tickRef.current);
   }, [isRunning, duration]);
 
+  // Auto-reveal hint when timer reaches half duration
+  useEffect(() => {
+    if (!activeRound || !isRunning) return;
+    const halfDuration = duration / 2;
+    if (elapsed >= halfDuration && !activeRound.reveal.hint1 && activeRound.hints[0]) {
+      updateRound(activeRound.id, { reveal: { ...activeRound.reveal, hint1: true } });
+    }
+  }, [elapsed, duration, activeRound, isRunning]);
+
   const progress = duration > 0 ? Math.min(1, elapsed / duration) : 0;
   const activeRound = rounds[current] || null;
   const liveBlur = previewUnblur ? 0 : autoUnblur ? Math.round((1 - progress) * startBlur) : startBlur;
