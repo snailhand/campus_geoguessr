@@ -348,29 +348,28 @@ export default function App() {
 
                     // Update score event toast (show for 5 seconds after scoring)
                     const scoreToastEl = document.getElementById('participantScoreToast');
-                    if (parentData.scoreEvent && parentData.scoreEvent.timestamp) {
+                    if (parentData.scoreEvent && parentData.scoreEvent.timestamp && scoreToastEl) {
                       const age = Date.now() - parentData.scoreEvent.timestamp;
                       if (age >= 0 && age <= 5000 && parentData.scoreEvent.delta !== 0) {
                         const delta = parentData.scoreEvent.delta;
                         const sign = delta > 0 ? '+' : '';
                         const bgColor = parentData.scoreEvent.color || '#0f172a';
-                        const text = parentData.teamName || 'Team';
-                        scoreToastEl.innerHTML = `
-                          <div style="
-                            background: ${bgColor};
-                            color: white;
-                            padding: 10px 18px;
-                            border-radius: 9999px;
-                            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-                            font-size: 16px;
-                            font-weight: 700;
-                            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-                            border: 2px solid rgba(15,23,42,0.6);
-                            backdrop-filter: blur(8px);
-                          ">
-                            ${parentData.scoreEvent.teamName} ${sign}${delta} point${Math.abs(delta) === 1 ? '' : 's'}
-                          </div>
-                        `;
+                        const pointsText = Math.abs(delta) === 1 ? 'point' : 'points';
+                        scoreToastEl.innerHTML =
+                          '<div style="' +
+                          'background: ' + bgColor + ';' +
+                          'color: white;' +
+                          'padding: 10px 18px;' +
+                          'border-radius: 9999px;' +
+                          "font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;" +
+                          'font-size: 16px;' +
+                          'font-weight: 700;' +
+                          'box-shadow: 0 10px 25px rgba(0,0,0,0.5);' +
+                          'border: 2px solid rgba(15,23,42,0.6);' +
+                          'backdrop-filter: blur(8px);' +
+                          '">' +
+                          parentData.scoreEvent.teamName + ' ' + sign + delta + ' ' + pointsText +
+                          '</div>';
                       } else {
                         scoreToastEl.innerHTML = '';
                       }
