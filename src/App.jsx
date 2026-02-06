@@ -86,8 +86,13 @@ export default function App() {
   const activeRound = rounds[current] || null;
   const liveBlur = previewUnblur ? 0 : autoUnblur ? Math.round((1 - progress) * startBlur) : startBlur;
 
-  // Zoom calculation: starts at 200% (2.0) when timer starts, gradually zooms out to 100% (1.0)
-  const liveZoom = previewUnblur ? 1.0 : (isRunning && autoUnblur) ? 1.0 + ((initialZoom - 1) * (1 - progress)) : (elapsed > 0 ? 1.0 : initialZoom);
+  // Zoom calculation: starts at initialZoom (e.g. 2.0) and gradually zooms out to 1.0 based on progress,
+  // independent of paused/running state so zoom "freezes" when the timer is paused.
+  const liveZoom = previewUnblur
+    ? 1.0
+    : autoUnblur
+    ? 1.0 + (initialZoom - 1) * (1 - progress)
+    : initialZoom;
   
   const openFiles = () => fileRef.current?.click();
   const handleAddRounds = (files) => {
@@ -287,9 +292,7 @@ export default function App() {
           </div>
           
           <div class="participant-hints" id="participantHints">
-            ${activeRound.reveal.hint1 && activeRound.hints[0] ? `<div class="participant-hint">Hint 1: ${activeRound.hints[0]}</div>` : ''}
-            ${activeRound.reveal.hint2 && activeRound.hints[1] ? `<div class="participant-hint">Hint 2: ${activeRound.hints[1]}</div>` : ''}
-            ${activeRound.reveal.hint3 && activeRound.hints[2] ? `<div class="participant-hint">Hint 3: ${activeRound.hints[2]}</div>` : ''}
+            ${activeRound.reveal.hint1 && activeRound.hints[0] ? `<div class="participant-hint">Hint: ${activeRound.hints[0]}</div>` : ''}
           </div>
           
           <!-- Center answer display -->
@@ -327,16 +330,10 @@ export default function App() {
                     document.getElementById('participantTimer').textContent = 
                       Math.floor(parentData.remaining / 60) + ':' + String(Math.floor(parentData.remaining % 60)).padStart(2, '0');
                     
-                    // Update hints
+                    // Update hints (single hint)
                     let hintsHtml = '';
                     if (parentData.reveal.hint1 && parentData.hints[0]) {
-                      hintsHtml += '<div class="participant-hint">Hint 1: ' + parentData.hints[0] + '</div>';
-                    }
-                    if (parentData.reveal.hint2 && parentData.hints[1]) {
-                      hintsHtml += '<div class="participant-hint">Hint 2: ' + parentData.hints[1] + '</div>';
-                    }
-                    if (parentData.reveal.hint3 && parentData.hints[2]) {
-                      hintsHtml += '<div class="participant-hint">Hint 3: ' + parentData.hints[2] + '</div>';
+                      hintsHtml += '<div class="participant-hint">Hint: ' + parentData.hints[0] + '</div>';
                     }
                     document.getElementById('participantHints').innerHTML = hintsHtml;
 
@@ -370,7 +367,7 @@ export default function App() {
                           '">' +
                           parentData.scoreEvent.teamName + ' ' + sign + delta + ' ' + pointsText +
                           '</div>';
-                      } else {
+                      } else { 
                         scoreToastEl.innerHTML = '';
                       }
                     } else if (scoreToastEl) {
@@ -608,14 +605,15 @@ export default function App() {
               {/* Bottom bar controls */}
               <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 bg-gradient-to-t from-black/60 to-transparent p-3">
                 <div className="flex items-center gap-2">
-                  <button
-                    onClick={startRound}
-                    className="rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium hover:bg-emerald-500 disabled:pointer-events-none disabled:opacity-50"
-                    disabled={!activeRound}
-                    title="Start Timer"
-                  >
-                    Start
-                  </button>
+                  {activeRound && elapsed === 0 && (
+                    <button
+                      onClick={startRound}
+                      className="rounded-lg bg-emerald-600 px-3 py-2 text-sm font-medium hover:bg-emerald-500 disabled:pointer-events-none disabled:opacity-50"
+                      title="Start Timer"
+                    >
+                      Start
+                    </button>
+                  )}
                   <button
                     onClick={togglePause}
                     className="rounded-lg bg-amber-600 px-3 py-2 text-sm font-medium hover:bg-amber-500 disabled:pointer-events-none disabled:opacity-50"
@@ -653,29 +651,7 @@ export default function App() {
                     }`}
                     disabled={!activeRound}
                   >
-                    Hint 1
-                  </button>
-                  <button
-                    onClick={() => reveal("hint2")}
-                    className={`rounded-lg px-3 py-2 text-xs ${
-                      activeRound?.reveal.hint2 
-                        ? "bg-emerald-600/80 hover:bg-emerald-500/80" 
-                        : "bg-slate-800/80 hover:bg-slate-700/80"
-                    }`}
-                    disabled={!activeRound}
-                  >
-                    Hint 2
-                  </button>
-                  <button
-                    onClick={() => reveal("hint3")}
-                    className={`rounded-lg px-3 py-2 text-xs ${
-                      activeRound?.reveal.hint3 
-                        ? "bg-emerald-600/80 hover:bg-emerald-500/80" 
-                        : "bg-slate-800/80 hover:bg-slate-700/80"
-                    }`}
-                    disabled={!activeRound}
-                  >
-                    Hint 3
+                    Hint
                   </button>
                   <button
                     onClick={() => reveal("answer")}
@@ -692,17 +668,9 @@ export default function App() {
               </div>
 
               {/* Top-left labels (hints when revealed) */}
-              {activeRound && (
+              {activeRound && activeRound.reveal.hint1 && activeRound.hints[0] && (
                 <div className="absolute left-3 top-3 space-y-1">
-                  {activeRound.reveal.hint1 && activeRound.hints[0] && (
-                    <Badge label={`Hint 1: ${activeRound.hints[0]}`} />
-                  )}
-                  {activeRound.reveal.hint2 && activeRound.hints[1] && (
-                    <Badge label={`Hint 2: ${activeRound.hints[1]}`} />
-                  )}
-                  {activeRound.reveal.hint3 && activeRound.hints[2] && (
-                    <Badge label={`Hint 3: ${activeRound.hints[2]}`} />
-                  )}
+                  <Badge label={`Hint: ${activeRound.hints[0]}`} />
                 </div>
               )}
               {/* Center answer display */}
@@ -1001,22 +969,18 @@ function RoundEditor({ round, updateRound }) {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-        {[0, 1, 2].map((i) => (
-          <div key={i}>
-            <label className="mb-1 block text-sm">Hint {i + 1}</label>
-            <input
-              value={local.hints[i]}
-              onChange={(e) => {
-                const arr = [...local.hints];
-                arr[i] = e.target.value;
-                setLocal((r) => ({ ...r, hints: arr }));
-              }}
-              placeholder={i === 0 ? "one" : i === 1 ? "two" : "three"}
-              className="w-full rounded-lg bg-slate-800 px-3 py-2 text-sm outline-none"
-            />
-          </div>
-        ))}
+      <div>
+        <label className="mb-1 block text-sm">Hint</label>
+        <input
+          value={local.hints[0]}
+          onChange={(e) => {
+            const arr = [...local.hints];
+            arr[0] = e.target.value;
+            setLocal((r) => ({ ...r, hints: arr }));
+          }}
+          placeholder="hint"
+          className="w-full rounded-lg bg-slate-800 px-3 py-2 text-sm outline-none"
+        />
       </div>
 
       <div className="flex items-center justify-end gap-2 pt-1">
