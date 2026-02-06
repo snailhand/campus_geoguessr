@@ -118,7 +118,16 @@ export default function App() {
     setIsRunning(true);
     if (activeRound) resetReveals(activeRound.id);
   };
-  const pauseRound = () => setIsRunning(false);
+  const togglePause = () => {
+    if (!activeRound) return;
+    if (isRunning) {
+      // Currently running -> pause
+      setIsRunning(false);
+    } else if (elapsed > 0 && elapsed < duration) {
+      // Previously started and paused -> resume
+      setIsRunning(true);
+    }
+  };
 
   const reveal = (key) => {
     if (!activeRound) return;
@@ -537,12 +546,12 @@ export default function App() {
                     Start
                   </button>
                   <button
-                    onClick={pauseRound}
+                    onClick={togglePause}
                     className="rounded-lg bg-amber-600 px-3 py-2 text-sm font-medium hover:bg-amber-500 disabled:pointer-events-none disabled:opacity-50"
-                    disabled={!isRunning}
-                    title="Pause Timer"
+                    disabled={!activeRound || (!isRunning && (elapsed === 0 || elapsed >= duration))}
+                    title={isRunning ? "Pause Timer" : "Resume Timer"}
                   >
-                    Pause
+                    {isRunning ? "Pause" : "Resume"}
                   </button>
                   <button
                     onClick={() => setElapsed(0)}
