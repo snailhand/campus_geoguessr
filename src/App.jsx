@@ -62,6 +62,7 @@ export default function App() {
   const [elapsed, setElapsed] = useState(0);
   const [previewUnblur, setPreviewUnblur] = useState(false);
   const [toast, setToast] = useState("");
+  const [lastScoreEvent, setLastScoreEvent] = useState(null);
 
   const fileRef = useRef(null);
   const tickRef = useRef(null);
@@ -147,7 +148,34 @@ export default function App() {
   };
 
   const setTeamScore = (idx, delta) => {
-    setTeams((ts) => ts.map((t, i) => (i === idx ? { ...t, score: Math.max(0, t.score + delta) } : t)));
+    if (delta === 0) return;
+    const teamColors = [
+      { name: "Blue", color: "#3b82f6" },
+      { name: "Red", color: "#ef4444" },
+      { name: "Green", color: "#22c55e" },
+      { name: "Purple", color: "#a855f7" },
+    ];
+
+    setTeams((ts) => {
+      const updated = ts.map((t, i) =>
+        i === idx ? { ...t, score: Math.max(0, t.score + delta) } : t
+      );
+
+      const team = updated[idx];
+      if (team) {
+        const colorInfo = teamColors[idx] || { name: "Gray", color: "#e5e7eb" };
+        setLastScoreEvent({
+          teamId: team.id,
+          teamName: team.name,
+          delta,
+          color: colorInfo.color,
+          colorName: colorInfo.name,
+          timestamp: Date.now(),
+        });
+      }
+
+      return updated;
+    });
   };
   const renameTeam = (idx, name) => setTeams((ts) => ts.map((t, i) => (i === idx ? { ...t, name } : t)));
   const resetScores = () => setTeams((ts) => ts.map((t) => ({ ...t, score: 0 })));
@@ -272,6 +300,17 @@ export default function App() {
               </div>
             ` : ''}
           </div>
+
+          <!-- Score event toast -->
+          <div class="participant-score-toast" id="participantScoreToast" style="
+              position: fixed;
+              left: 50%;
+              bottom: 30px;
+              transform: translateX(-50%);
+              z-index: 20;
+              pointer-events: none;
+            ">
+          </div>
           
           <script>
             // Sync with parent window
@@ -306,6 +345,38 @@ export default function App() {
                       ? '<div class="participant-answer-center">' + parentData.answer + '</div>'
                       : '';
                     document.getElementById('participantCenterAnswer').innerHTML = centerAnswerHtml;
+
+                    // Update score event toast (show for 5 seconds after scoring)
+                    const scoreToastEl = document.getElementById('participantScoreToast');
+                    if (parentData.scoreEvent && parentData.scoreEvent.timestamp) {
+                      const age = Date.now() - parentData.scoreEvent.timestamp;
+                      if (age >= 0 && age <= 5000 && parentData.scoreEvent.delta !== 0) {
+                        const delta = parentData.scoreEvent.delta;
+                        const sign = delta > 0 ? '+' : '';
+                        const bgColor = parentData.scoreEvent.color || '#0f172a';
+                        const text = parentData.teamName || 'Team';
+                        scoreToastEl.innerHTML = `
+                          <div style="
+                            background: ${bgColor};
+                            color: white;
+                            padding: 10px 18px;
+                            border-radius: 9999px;
+                            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                            font-size: 16px;
+                            font-weight: 700;
+                            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+                            border: 2px solid rgba(15,23,42,0.6);
+                            backdrop-filter: blur(8px);
+                          ">
+                            ${parentData.scoreEvent.teamName} ${sign}${delta} point${Math.abs(delta) === 1 ? '' : 's'}
+                          </div>
+                        `;
+                      } else {
+                        scoreToastEl.innerHTML = '';
+                      }
+                    } else if (scoreToastEl) {
+                      scoreToastEl.innerHTML = '';
+                    }
                   }
                 }
               } catch (e) {
@@ -390,7 +461,8 @@ export default function App() {
       remaining: remaining,
       reveal: activeRound.reveal,
       hints: activeRound.hints,
-      answer: activeRound.answer
+      answer: activeRound.answer,
+      scoreEvent: lastScoreEvent,
     };
   };
 
@@ -407,7 +479,7 @@ export default function App() {
       delete window.getParticipantData;
       delete window.setParticipantViewClosed;
     };
-  }, [activeRound, liveBlur, elapsed, duration]);
+  }, [activeRound, liveBlur, elapsed, duration, lastScoreEvent]);
 
   return (
     <div className="min-h-screen w-full bg-slate-950 text-slate-100">
@@ -553,13 +625,15 @@ export default function App() {
                   >
                     {isRunning ? "Pause" : "Resume"}
                   </button>
-                  <button
-                    onClick={() => setElapsed(0)}
-                    className="rounded-lg bg-slate-700 px-3 py-2 text-sm hover:bg-slate-600"
-                    title="Reset Timer"
-                  >
-                   Reset
-                  </button>
+                  {!isRunning && elapsed > 0 && (
+                    <button
+                      onClick={() => setElapsed(0)}
+                      className="rounded-lg bg-slate-700 px-3 py-2 text-sm hover:bg-slate-600"
+                      title="Reset Timer"
+                    >
+                      Reset
+                    </button>
+                  )}
                 </div>
 
                 <div className="flex items-center gap-2">
