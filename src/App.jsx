@@ -94,6 +94,13 @@ export default function App() {
     ? 1.0 + (initialZoom - 1) * (1 - progress)
     : initialZoom;
   
+  const switchToRound = (idxOrFn) => {
+    setIsRunning(false);
+    setElapsed(0);
+    setPreviewUnblur(false);
+    setCurrent(idxOrFn);
+  };
+
   const openFiles = () => fileRef.current?.click();
   const handleAddRounds = (files) => {
     if (!files || files.length === 0) return;
@@ -139,13 +146,6 @@ export default function App() {
     if (!activeRound) return;
     const currentReveal = activeRound.reveal[key];
     updateRound(activeRound.id, { reveal: { ...activeRound.reveal, [key]: !currentReveal } });
-  };
-
-  const switchToRound = (idxOrFn) => {
-    setIsRunning(false);
-    setElapsed(0);
-    setPreviewUnblur(false);
-    setCurrent(idxOrFn);
   };
 
   const nextRound = () => {
