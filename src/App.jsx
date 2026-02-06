@@ -82,6 +82,13 @@ export default function App() {
     return () => cancelAnimationFrame(tickRef.current);
   }, [isRunning, duration]);
 
+  const progress = duration > 0 ? Math.min(1, elapsed / duration) : 0;
+  const activeRound = rounds[current] || null;
+
+  const updateRound = (id, patch) => {
+    setRounds((arr) => arr.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  };
+
   // Auto-reveal hint when timer reaches half duration
   useEffect(() => {
     if (!activeRound || !isRunning) return;
@@ -89,10 +96,8 @@ export default function App() {
     if (elapsed >= halfDuration && !activeRound.reveal.hint1 && activeRound.hints[0]) {
       updateRound(activeRound.id, { reveal: { ...activeRound.reveal, hint1: true } });
     }
-  }, [elapsed, duration, activeRound, isRunning]);
-
-  const progress = duration > 0 ? Math.min(1, elapsed / duration) : 0;
-  const activeRound = rounds[current] || null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [elapsed, duration, activeRound?.id, activeRound?.reveal.hint1, activeRound?.hints[0], isRunning]);
   const liveBlur = previewUnblur ? 0 : autoUnblur ? Math.round((1 - progress) * startBlur) : startBlur;
 
   // Zoom calculation: starts at initialZoom (e.g. 2.0) and gradually zooms out to 1.0 based on progress,
@@ -127,10 +132,6 @@ export default function App() {
   const onDropStage = (e) => {
     e.preventDefault();
     if (e.dataTransfer?.files?.length) handleAddRounds(e.dataTransfer.files);
-  };
-
-  const updateRound = (id, patch) => {
-    setRounds((arr) => arr.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   };
 
   const resetReveals = (id) => updateRound(id, { reveal: { hint1: false, hint2: false, hint3: false, answer: false } });
