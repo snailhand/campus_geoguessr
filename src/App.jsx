@@ -144,6 +144,7 @@ export default function App() {
   const switchToRound = (idxOrFn) => {
     setIsRunning(false);
     setElapsed(0);
+    setPreviewUnblur(false);
     setCurrent(idxOrFn);
   };
 
