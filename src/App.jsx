@@ -103,7 +103,7 @@ export default function App() {
     });
     setRounds((r) => [...r, ...newRounds]);
     // Auto-select: first added if list was empty, else jump to the first newly added
-    setCurrent((idx) => (rounds.length === 0 ? 0 : rounds.length));
+    switchToRound((idx) => (rounds.length === 0 ? 0 : rounds.length));
     setToast(`Added ${newRounds.length} round${newRounds.length > 1 ? "s" : ""}`);
     setTimeout(() => setToast(""), 2000);
   };
@@ -141,15 +141,17 @@ export default function App() {
     updateRound(activeRound.id, { reveal: { ...activeRound.reveal, [key]: !currentReveal } });
   };
 
-  const nextRound = () => {
+  const switchToRound = (idxOrFn) => {
     setIsRunning(false);
     setElapsed(0);
-    setCurrent((i) => Math.min(i + 1, Math.max(0, rounds.length - 1)));
+    setCurrent(idxOrFn);
+  };
+
+  const nextRound = () => {
+    switchToRound((i) => Math.min(i + 1, Math.max(0, rounds.length - 1)));
   };
   const prevRound = () => {
-    setIsRunning(false);
-    setElapsed(0);
-    setCurrent((i) => Math.max(i - 1, 0));
+    switchToRound((i) => Math.max(i - 1, 0));
   };
 
   const setTeamScore = (idx, delta) => {
@@ -188,8 +190,8 @@ export default function App() {
   // Delete round functionality
   const deleteRound = (id) => {
     setRounds((arr) => arr.filter((r) => r.id !== id));
-    // Adjust current index if needed
-    setCurrent((idx) => {
+    // Adjust current index if needed and reset timer
+    switchToRound((idx) => {
       const newLength = rounds.length - 1;
       if (newLength === 0) return 0;
       if (idx >= newLength) return newLength - 1;
@@ -275,7 +277,7 @@ export default function App() {
               color: white;
               padding: 12px 24px;
               border-radius: 12px;
-              font-size: 18px;
+              font-size: 54px;
               font-weight: bold;
               text-align: center;
               box-shadow: 0 4px 20px rgba(0,0,0,0.5);
@@ -318,14 +320,23 @@ export default function App() {
           <script>
             // Sync with parent window
             let lastUpdate = Date.now();
+            let lastImageUrl = '${activeRound.imageUrl}';
             
             function updateParticipantView() {
               try {
                 if (window.opener && !window.opener.closed) {
                   const parentData = window.opener.getParticipantData && window.opener.getParticipantData();
                   if (parentData) {
-                    document.getElementById('participantImage').style.filter = 'blur(' + parentData.blur + 'px)';
-                    document.getElementById('participantImage').style.transform = 'scale(' + parentData.zoom + ')';
+                    // Update image if round changed
+                    const imgEl = document.getElementById('participantImage');
+                    if (parentData.imageUrl && parentData.imageUrl !== lastImageUrl) {
+                      imgEl.src = parentData.imageUrl;
+                      imgEl.alt = parentData.imageName || 'Round';
+                      lastImageUrl = parentData.imageUrl;
+                    }
+                    
+                    imgEl.style.filter = 'blur(' + parentData.blur + 'px)';
+                    imgEl.style.transform = 'scale(' + parentData.zoom + ')';
 
                     document.getElementById('participantTimer').textContent = 
                       Math.floor(parentData.remaining / 60) + ':' + String(Math.floor(parentData.remaining % 60)).padStart(2, '0');
@@ -432,7 +443,7 @@ export default function App() {
             hints: r.hints || ["", "", ""],
           }));
           setRounds(mapped);
-          setCurrent(0);
+          switchToRound(0);
         }
         if (obj?.teams) setTeams(obj.teams);
         if (obj?.settings) {
@@ -459,6 +470,8 @@ export default function App() {
       hints: activeRound.hints,
       answer: activeRound.answer,
       scoreEvent: lastScoreEvent,
+      imageUrl: activeRound.imageUrl,
+      imageName: activeRound.imageName,
     };
   };
 
@@ -506,7 +519,7 @@ export default function App() {
             <button 
               onClick={() => {
                 setRounds([]);
-                setCurrent(0);
+                switchToRound(0);
                 setToast("All rounds cleared");
                 setTimeout(() => setToast(""), 2000);
               }}
@@ -676,7 +689,7 @@ export default function App() {
               {/* Center answer display */}
               {activeRound && activeRound.reveal.answer && activeRound.answer && (
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="bg-emerald-600/95 text-white px-6 py-3 rounded-xl text-lg font-bold shadow-2xl border-2 border-emerald-400/50 backdrop-blur-sm">
+                  <div className="bg-emerald-600/95 text-white px-6 py-3 rounded-xl text-[54px] font-bold shadow-2xl border-2 border-emerald-400/50 backdrop-blur-sm">
                     {activeRound.answer}
                   </div>
                 </div>
@@ -746,7 +759,7 @@ export default function App() {
                       }`}
                     >
                       <button
-                        onClick={() => setCurrent(idx)}
+                        onClick={() => switchToRound(idx)}
                         className="flex flex-1 items-center gap-3 text-left hover:bg-slate-800/70 rounded-lg p-1"
                       >
                         <div className="h-12 w-16 overflow-hidden rounded-lg bg-slate-800">
