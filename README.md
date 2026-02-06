@@ -1,2 +1,2 @@
 # campus_geoguessr
-Vibe &amp; Connect 1 Campus GeoGuessr
+ECGA Hangout Hour 2 Campus GeoGuessr game
